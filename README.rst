@@ -1,3 +1,18 @@
+Introducción...
+====================
+
+El texto de este repositorio es un intento de traducción al
+español (de España) del texto original en inglés del repositorio 
+https://github.com/alex/what-happens-when
+
+Consideré la información muy didáctica he importante para repasar 
+conceptos básicos y entender, para el que no tuviera cierta idea ya, 
+la "magia" que ocurre ante una acción tan cotidiana. Por lo tanto, 
+he realizado esta traducción (Que aún tiene muchas cosas por corregir) 
+creyendo que podría serle útil a alguien de habla hispana.
+
+Comencemos:
+
 Qué ocurre cuando...
 ====================
 
@@ -15,9 +30,6 @@ Así que envianos un pull requets, ¡por favor!.
 
 
 Todo esto esta licenciado bajo los términos de la `Creative Commons Zero`_
-
-Lee esto en `简体中文`_ (Chino simplificado). NOTA: No ha sido revisado por 
-los mantenedores de alex/what-happens-when.
 
 Tabla de contenidos
 ====================
