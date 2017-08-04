@@ -16,18 +16,16 @@ Comencemos:
 Qué ocurre cuando...
 ====================
 
-Este repositorio es un intendo de responder la vieja pregunta "Qué ocurre
+Este repositorio es un intendo de responder la vieja pregunta "¿Qué ocurre
 cuando escribes google.com en la barra de direcciones de tu navegador web
-y presionas "enter"?"
+y presionas Enter?"
 
 En vez de usar la típica historia, vamos a intentar responder esta pregunta
 de la manera más detallada posible. Sin omitir nada.
 
-
-Esto es un proceso colabortativo, asi que promuévelo e intenta ayudar.
-Hay tonetadas de detalles perdidos esperando por ti para ser añadidos. 
-Así que envianos un pull requets, ¡por favor!.
-
+Esto es un proceso colaborativo, así que promuévelo e intenta ayudar.
+Hay toneladas de detalles perdidos esperando por ti para ser añadidos. 
+Así que envíanos un pull requets, ¡por favor!.
 
 Todo esto esta licenciado bajo los términos de la `Creative Commons Zero`_
 
@@ -42,21 +40,22 @@ La tecla "g" es pulsada
 ----------------------
 La siguiente sección explica todo acerca del teclado físico y las 
 interrupciones del sistema operativo. Pero, un montón de cosas
-que no son explicadas pasan después de eso
+que no son explicadas pasan después de eso.
 Cuando tú pulsas la "g" el navegador revice el evento
 y toda la maquinaria de autocompletado se pone en marcha.
-Depnediendo del algoritmo de tu navegador y de si estás 
-en modo privado/incognito o no hay sugerencias para serle
+Dependiendo del algoritmo de tu navegador y de si estás 
+en modo privado/incógnito o no hay sugerencias para ser
 presentadas en el dropdown bajo la barra de direcciones.
 Muchos de esos algoritmos priorizan los resultados basados
 en el historial de búsqueda y marcadores.
-Tú estás escribiendo "google.com" así que nada de eso importa
-Pero un montón de código va a correr antes de que obtengas eso
+Tú estás escribiendo "google.com" así que nada de eso importa,
+pero un montón de código va a correr antes de que obtengas eso
 y las sugerencias serán refinadas con cada pulsación de tecla.
-Esto incluso puede sugerirte "google.com" antes de que lo escribas.
+Esto incluso puede hacer que te sea sugerido "google.com" antes 
+de que lo escribas.
 
 
-La tecla "enter" toca fondo.
+La tecla "Enter" toca fondo.
 ---------------------------
 
 Para escoger un punto de partida, vamos a elegir la tecla Enter del teclado
@@ -73,7 +72,7 @@ PS/2 o conexiones ADB.
 
 *En el caso de teclados USB:*
 
-- La circuitería del teclado usb es alimentada por el suministro de 5V
+- La circuitería del teclado usb es alimentada por un suministro de 5V
   recibido por el pin 1 desde la controladora USB del host.
 
 - La clave generada es almacenada en una memoria interna de la circuitería
@@ -88,8 +87,8 @@ PS/2 o conexiones ADB.
 
 - Esos paquetes son enviados por una señal electrica diferencial sobre
   los pines D+ y D- (la segunda mitad) a una velocidad máxima de 1.5 Mb/s, 
-  como un dispositivo HID (Human Interface Device) siempre es declarado
-  para ser un "dispositivo de baja velocidad" (USB 2.0 compliance) 
+  como dispositivo HID (Human Interface Device), siempre es declarado
+  como un "dispositivo de baja velocidad" (USB 2.0 compliance) 
 
 - Esta señal en serie es entonces decodificada por la controladora USB
   del host e interpretada por el driver del teclado universal Human Interface Device 
@@ -110,21 +109,14 @@ PS/2 o conexiones ADB.
   enfocada del evento de presión en uno de los elementos de su GUI
   (los cuales ahora son los botones de la aplicación de teclado virtual)
 
-- Then the mobile OS notifies the current focused application of a press event
-  in one of its GUI elements (which now is the virtual keyboard application
-  buttons).
-
 - El teclado virtual puede ahora lanzar una interrupción de software
   enviando un mensaje de tecla presionada de vuelta al OS.
 
 - Esta interrupción notifica a la aplicación enfocada actual de un 
-  evento de tecla presionada. 
-
-- This interrupt notifies the current focused application of a 'key pressed'
-  event.
+  evento de 'key pressed' (tecla presionada). 
 
 
-Disparos de interrupción [NOT for USB keyboards]
+Disparos de interrupción [NO en teclados USB]
 ---------------------------------------
 
 El teclado envia señales en su línea de petición de interrupción, la cual
@@ -213,14 +205,14 @@ Parse URL
 
 ¿Es esto una URL o un término de búsqueda?
 -----------------------------
-Cuando no se le da un protocolo o un nombre de dominio válido al navedador,
-este procede a pasar el texto introducido en la barra de direcciones 
-a el motor de búsqueda por defecto del navegador.
+Cuando no se le da un protocolo o un nombre de dominio válido al navegador,
+éste procede a pasar el texto introducido en la barra de direcciones 
+a el motor de búsqueda configurado por defecto.
 En muchos casos la URL tiene una parte especial de texto añadida 
 que le dice al motor de búsqueda que viene de la barra de direcciones
 de un navegador en particular.
 
-Conviertir caracteres Unicode no-ASCII en un nombre de host
+Convertir caracteres Unicode no-ASCII en un nombre de host
 ------------------------------------------------
 * El navegador comprueba el nombre de host por caracteres que no sean ``a-z``,
   ``A-Z``, ``0-9``, ``-``, or ``.``.
@@ -249,17 +241,17 @@ Comprueba lista HSTS
 Resolución DNS 
 ----------
 
-* El navegador comprueba si el dominio está en su cache (para ver la 
+* El navegador comprueba si el dominio está en su caché (para ver la 
   caché DNS en Chrome, ve a `chrome://net-internals/#dns <chrome://net-internals/#dns>`_).
 * Si no es encontrado, el navegador llama a la función de biblioteca 
   ``gethostbyname`` (varía dependiendo del OS) para hacer la resolución dns.
 * ``gethostbyname`` comprueba si el nombre de host puede ser resuelto por
-  referencia en el fichero local ``hosts`` (Cuya situación varía en
-  cada OS) antes de intentar resolver el nombre de host a través de DNS.
+  referencia en el fichero local ``hosts`` (Cuyo lugar donde se encuentra 
+  varía en cada OS) antes de intentar resolver el nombre de host a través de DNS.
 * Si ``gethostbyname`` no lo tiene cacheado o no puede encontrarlo
   en el archivo ``hosts``, entonces realiza una solicitud al servidor DNS
-  condifurado en el stack de red. Esto se realiza típicamente contra el 
-  route local o contra el servidor de cacheo DNS del ISP.
+  condigurado en el stack de red. Esto se realiza típicamente contra el 
+  router local o contra el servidor de cacheo DNS del ISP.
 * Si el servidor DNS está en la misma subred, la biblioteca de red 
   sigue el ``ARP process`` por debajo del servidor DNS.
 * Si el servidor DNS está en una subred diferente, la biblioteca de red
