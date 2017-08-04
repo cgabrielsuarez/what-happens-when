@@ -1,134 +1,159 @@
-What happens when...
+Qué ocurre cuando...
 ====================
 
-This repository is an attempt to answer the age old interview question "What
-happens when you type google.com into your browser's address box and press
-enter?"
+Este repositorio es un intendo de responder la vieja pregunta "Qué ocurre
+cuando escribes google.com en la barra de direcciones de tu navegador web
+y presionas "enter"?"
 
-Except instead of the usual story, we're going to try to answer this question
-in as much detail as possible. No skipping out on anything.
+En vez de usar la típica historia, vamos a intentar responder esta pregunta
+de la manera más detallada posible. Sin omitir nada.
 
-This is a collaborative process, so dig in and try to help out! There's tons of
-details missing, just waiting for you to add them! So send us a pull request,
-please!
 
-This is all licensed under the terms of the `Creative Commons Zero`_ license.
+Esto es un proceso colabortativo, asi que promuévelo e intenta ayudar.
+Hay tonetadas de detalles perdidos esperando por ti para ser añadidos. 
+Así que envianos un pull requets, ¡por favor!.
 
-Read this in `简体中文`_ (simplified Chinese). NOTE: this has not been reviewed
-by the alex/what-happens-when maintainers.
 
-Table of Contents
+Todo esto esta licenciado bajo los términos de la `Creative Commons Zero`_
+
+Lee esto en `简体中文`_ (Chino simplificado). NOTA: No ha sido revisado por 
+los mantenedores de alex/what-happens-when.
+
+Tabla de contenidos
 ====================
 
 .. contents::
    :backlinks: none
    :local:
 
-The "g" key is pressed
+La tecla "g" es pulsada
 ----------------------
-The following sections explains all about the physical keyboard
-and the OS interrupts. But, a whole lot happens after that which
-isn't explained. When you just press "g" the browser receives the
-event and the entire auto-complete machinery kicks into high gear.
-Depending on your browser's algorithm and if you are in
-private/incognito mode or not various suggestions will be presented
-to you in the dropbox below the URL bar. Most of these algorithms
-prioritize results based on search history and bookmarks. You are
-going to type "google.com" so none of it matters, but a lot of code
-will run before you get there and the suggestions will be refined
-with each key press. It may even suggest "google.com" before you type it.
+La siguiente sección explica todo acerca del teclado físico y las 
+interrupciones del sistema operativo. Pero, un montón de cosas
+que no son explicadas pasan después de eso
+Cuando tú pulsas la "g" el navegador revice el evento
+y toda la maquinaria de autocompletado se pone en marcha.
+Depnediendo del algoritmo de tu navegador y de si estás 
+en modo privado/incognito o no hay sugerencias para serle
+presentadas en el dropdown bajo la barra de direcciones.
+Muchos de esos algoritmos priorizan los resultados basados
+en el historial de búsqueda y marcadores.
+Tú estás escribiendo "google.com" así que nada de eso importa
+Pero un montón de código va a correr antes de que obtengas eso
+y las sugerencias serán refinadas con cada pulsación de tecla.
+Esto incluso puede sugerirte "google.com" antes de que lo escribas.
 
-The "enter" key bottoms out
+
+La tecla "enter" toca fondo.
 ---------------------------
 
-To pick a zero point, let's choose the Enter key on the keyboard hitting the
-bottom of its range. At this point, an electrical circuit specific to the enter
-key is closed (either directly or capacitively). This allows a small amount of
-current to flow into the logic circuitry of the keyboard, which scans the state
-of each key switch, debounces the electrical noise of the rapid intermittent
-closure of the switch, and converts it to a keycode integer, in this case 13.
-The keyboard controller then encodes the keycode for transport to the computer.
-This is now almost universally over a Universal Serial Bus (USB) or Bluetooth
-connection, but historically has been over PS/2 or ADB connections.
+Para escoger un punto de partida, vamos a elegir la tecla Enter del teclado
+siendo presionada hasta el fondo. En este punto, un circuito eléctrico 
+específico a la tecla Enter es cerrado (ya sea directamente o capacitativamente). 
+Esto permite que una pequeña cantidad de corriente fluya hacia la 
+circuitería lógica del teclado, la cual escanea el estado del interruptor de 
+cada tecla, desactiva el ruido eléctrico del rápido e intermitente 
+cierre del interruptor, y lo convierte a una clave entera, en este caso "13".
+La controladora del teclado entonces codifica la clave para ser transportada 
+a la computadora. Esto sucede ahora de manera casi universal sobre Universal Serial Bus 
+(USB) o mediante conexiones Bluetooth, pero historicamente ha sido sobre
+PS/2 o conexiones ADB.
 
-*In the case of the USB keyboard:*
+*En el caso de teclados USB:*
 
-- The USB circuitry of the keyboard is powered by the 5V supply provided over
-  pin 1 from the computer's USB host controller.
+- La circuitería del teclado usb es alimentada por el suministro de 5V
+  recibido por el pin 1 desde la controladora USB del host.
 
-- The keycode generated is stored by internal keyboard circuitry memory in a
-  register called "endpoint".
+- La clave generada es almacenada en una memoria interna de la circuitería
+  en un registro llamado "endpoint".
 
-- The host USB controller polls that "endpoint" every ~10ms (minimum value
-  declared by the keyboard), so it gets the keycode value stored on it.
+- La controladora USB del host sondea ese endpoint cada ~10ms (el valor
+  mínimo declarado por el teclado), obtiene entonces el valor de la clave
+  almacenado en el registro.
 
-- This value goes to the USB SIE (Serial Interface Engine) to be converted in
-  one or more USB packets that follows the low level USB protocol.
+- Este valor va al USB SIE (Serial Interface Engine) para ser convertido
+  en un o más packetes USB que sigue el protocolo USB de bajo nivel.
 
-- Those packets are sent by a differential electrical signal over D+ and D-
-  pins (the middle 2) at a maximum speed of 1.5 Mb/s, as an HID
-  (Human Interface Device) device is always declared to be a "low speed device"
-  (USB 2.0 compliance).
+- Esos paquetes son enviados por una señal electrica diferencial sobre
+  los pines D+ y D- (la segunda mitad) a una velocidad máxima de 1.5 Mb/s, 
+  como un dispositivo HID (Human Interface Device) siempre es declarado
+  para ser un "dispositivo de baja velocidad" (USB 2.0 compliance) 
 
-- This serial signal is then decoded at the computer's host USB controller, and
-  interpreted by the computer's Human Interface Device (HID) universal keyboard
-  device driver.  The value of the key is then passed into the operating
-  system's hardware abstraction layer.
+- Esta señal en serie es entonces decodificada por la controladora USB
+  del host e interpretada por el driver del teclado universal Human Interface Device 
+  (HID). El valor de esta tecla es entonces pasada a la capa de abtracción de
+  hardware del sistema operativo.
 
-*In the case of Virtual Keyboard (as in touch screen devices):*
 
-- When the user puts their finger on a modern capacitive touch screen, a
-  tiny amount of current gets transferred to the finger. This completes the
-  circuit through the electrostatic field of the conductive layer and
-  creates a voltage drop at that point on the screen. The
-  ``screen controller`` then raises an interrupt reporting the coordinate of
-  the key press.
+*En el caso de teclados virtuales (como en pantallas de dispositivos táctiles):*
+
+- Cuando el usuario pone sus dedos en una pantalla capacitiva táctil, una
+  pequeña cantidad de corriente se transfiere al dedo. Esto completa el 
+  circuito a través del campo electrostático de la capa conductora
+  y crea una caída del voltaje en ese punto de la pantalla. Entonces, el 
+  ``screen controller`` lanza una interrupción informando de la coordenada
+  de la presión de la tecla.
+
+- Entonces, el sistema operativo móvil notifica la aplicación actualmente
+  enfocada del evento de presión en uno de los elementos de su GUI
+  (los cuales ahora son los botones de la aplicación de teclado virtual)
 
 - Then the mobile OS notifies the current focused application of a press event
   in one of its GUI elements (which now is the virtual keyboard application
   buttons).
 
-- The virtual keyboard can now raise a software interrupt for sending a
-  'key pressed' message back to the OS.
+- El teclado virtual puede ahora lanzar una interrupción de software
+  enviando un mensaje de tecla presionada de vuelta al OS.
+
+- Esta interrupción notifica a la aplicación enfocada actual de un 
+  evento de tecla presionada. 
 
 - This interrupt notifies the current focused application of a 'key pressed'
   event.
 
 
-Interrupt fires [NOT for USB keyboards]
+Disparos de interrupción [NOT for USB keyboards]
 ---------------------------------------
 
-The keyboard sends signals on its interrupt request line (IRQ), which is mapped
-to an ``interrupt vector`` (integer) by the interrupt controller. The CPU uses
-the ``Interrupt Descriptor Table`` (IDT) to map the interrupt vectors to
-functions (``interrupt handlers``) which are supplied by the kernel. When an
-interrupt arrives, the CPU indexes the IDT with the interrupt vector and runs
-the appropriate handler. Thus, the kernel is entered.
+El teclado envia señales en su línea de petición de interrupción, la cual
+es mapeada a un ``vector de interrupción`` (entero) por el controlador de
+interrupciones. La CPU usa la ``Tabla de descripción de interrupciones`` (IDT)
+para mapear los vectores de interrupción a funciones (``Manejadoras de interrupción``)
+que son proporcionadas por el Kernel.
+Cuando una interrupción llega, la CPU indexa la IDT con el vector de interrupción
+y ejecuta el manejador apropiado. 
 
-(On Windows) A ``WM_KEYDOWN`` message is sent to the app
+
+(En Windows) Un mensaje ``WM_KEYDOWN`` es enviado a la app.
 --------------------------------------------------------
 
-The HID transport passes the key down event to the ``KBDHID.sys`` driver which
-converts the HID usage into a scancode. In this case the scan code is
-``VK_RETURN`` (``0x0D``). The ``KBDHID.sys`` driver interfaces with the
-``KBDCLASS.sys`` (keyboard class driver). This driver is responsible for
-handling all keyboard and keypad input in a secure manner. It then calls into
-``Win32K.sys`` (after potentially passing the message through 3rd party
-keyboard filters that are installed). This all happens in kernel mode.
+El HID pasa el evento de tecla pulsada al driver ``KBDHID.sys`` el cual
+convierte el HID en un scancode. En este caso, el scancode es 
+``VK_RETURN`` (``0x0D``). El driver ``KBDHID.sys`` con ``KBDCLASS.sys``
+(keyboad class driver). Este driver es responsable de manejar
+todas las entradas de teclado y keypad de una manera segura.
+Entonces llama a ``Win32K.sys`` (después de potencialmente pasa el
+mensaje a través de filtros de teclados de terceros que están instalados).
+Todo esto ocurre en el modo kernel.
 
-``Win32K.sys`` figures out what window is the active window through the
-``GetForegroundWindow()`` API. This API provides the window handle of the
-browser's address box. The main Windows "message pump" then calls
-``SendMessage(hWnd, WM_KEYDOWN, VK_RETURN, lParam)``. ``lParam`` is a bitmask
-that indicates further information about the keypress: repeat count (0 in this
-case), the actual scan code (can be OEM dependent, but generally wouldn't be
-for ``VK_RETURN``), whether extended keys (e.g. alt, shift, ctrl) were also
-pressed (they weren't), and some other state.
+``Win32K.sys`` intuye qué ventana es la ventana activa a través de
+``GetForegroundWindows()`` API. Esta API provee el manejo de ventana
+de la barra de direcciones del navegador. La ventana principal "message pump"
+entonces llama a ``SendMessage(hWnd, WM_KEYDOWN, VK_RETURN, lParam)``. 
+``lParam`` es una máscara de bits que indica más información
+sobre la pulsación de la tecla: repetición (0 en este caso),
+el scancode actual (puede ser "OEM dependent", pero generalmente
+no sería para ``VK_RETURN``), si fueron pulsadas también 
+teclas extendidas (e.g alt, shift, ctrl) (No fueron), y 
+algún otro estado.
 
-The Windows ``SendMessage`` API is a straightforward function that
-adds the message to a queue for the particular window handle (``hWnd``).
-Later, the main message processing function (called a ``WindowProc``) assigned
-to the ``hWnd`` is called in order to process each message in the queue.
+La api de Windows ``SendMessage`` es una sencilla funcion que añade 
+el mensaje a una cola para un manejo de ventana particular.
+Más tarde, la principal funcion de procesamiento de mensaje
+(llamada ``WindowProc``) asignada al ``hWnd`` es llamada 
+para procesar cada mensaje de la cola.
+
+La ventana (``hWnd``) que está activa es actualmente un 
 
 The window (``hWnd``) that is active is actually an edit control and the
 ``WindowProc`` in this case has a message handler for ``WM_KEYDOWN`` messages.
@@ -136,115 +161,122 @@ This code looks within the 3rd parameter that was passed to ``SendMessage``
 (``wParam``) and, because it is ``VK_RETURN`` knows the user has hit the ENTER
 key.
 
-(On OS X) A ``KeyDown`` NSEvent is sent to the app
+(En OS X) Un evento ``KeyDown`` NSEvent es enviado a la app
 --------------------------------------------------
 
-The interrupt signal triggers an interrupt event in the I/O Kit kext keyboard
-driver. The driver translates the signal into a key code which is passed to the
-OS X ``WindowServer`` process. Resultantly, the ``WindowServer`` dispatches an
-event to any appropriate (e.g. active or listening) applications through their
-Mach port where it is placed into an event queue. Events can then be read from
-this queue by threads with sufficient privileges calling the
-``mach_ipc_dispatch`` function. This most commonly occurs through, and is
-handled by, an ``NSApplication`` main event loop, via an ``NSEvent`` of
-``NSEventType`` ``KeyDown``.
+La señal de interupcion dispara un evento de interrupcion en el driver
+'I/O Kit Kext Keyboard'. El driver traduce la señal en un keycode el cual
+es pasado al proceso ``WindowServer`` de OS X. Como resultado, el ``WindowServer``
+despacha un evento a la aplicación (por ejemplo activo o a la escucha) apropiada
+a través de su puerto Mach donde es situado en un evento de cola.
+Los Eventos pueden ser leídos de esta cola por theads con los 
+suficientes privilegios llamando a la función ``mach_ipc_dispatch``. 
+Esto mayormente ocurre a través de, y es manejado, por un blucle del evento principal
+``NSApplication``, vía ``NSEvent`` de ``NSEventType`` ``KeyDown``. 
 
-(On GNU/Linux) the Xorg server listens for keycodes
+(En GNU/Linux) El servidor Xorg a la escucha de keycodes
 ---------------------------------------------------
 
-When a graphical ``X server`` is used, ``X`` will use the generic event
-driver ``evdev`` to acquire the keypress. A re-mapping of keycodes to scancodes
-is made with ``X server`` specific keymaps and rules.
-When the scancode mapping of the key pressed is complete, the ``X server``
-sends the character to the ``window manager`` (DWM, metacity, i3, etc), so the
-``window manager`` in turn sends the character to the focused window.
-The graphical API of the window  that receives the character prints the
-appropriate font symbol in the appropriate focused field.
+Cuando un servidor gráfico ``X server`` está en uso, ``X`` usará 
+el driver de eventos genéricos ``evdev`` para obtener la pulsación de la tecla.
+Un remapeo de keycodes a scancodes es realizado con keymaps especificos y reglas
+de ``X server``. 
+Cuando el mapeo de scancode de la tecla pulsada está completo, el ``X server``
+envía el carácter al ``window manager`` (Gestor de ventana: DWM, metacity, 
+i3, etc) entonces el ``window manager`` a cambio envía el caracter a la 
+ventana enfocada. La API de la ventana que recive el caracter imprime
+el simbolo apropiado en campo apropiado que tiene el foco.
 
 Parse URL
 ---------
-
-* The browser now has the following information contained in the URL (Uniform
-  Resource Locator):
+* El navegador ahora tiene la siguiente información contenida en la URL 
+  (Uniform Resource Locator):
 
     - ``Protocol``  "http"
-        Use 'Hyper Text Transfer Protocol'
+        Usa 'Hyper Text Transfer Protocol'
 
     - ``Resource``  "/"
-        Retrieve main (index) page
+        Trae la página principal (index)
 
 
-Is it a URL or a search term?
+¿Es esto una URL o un término de búsqueda?
 -----------------------------
+Cuando no se le da un protocolo o un nombre de dominio válido al navedador,
+este procede a pasar el texto introducido en la barra de direcciones 
+a el motor de búsqueda por defecto del navegador.
+En muchos casos la URL tiene una parte especial de texto añadida 
+que le dice al motor de búsqueda que viene de la barra de direcciones
+de un navegador en particular.
 
-When no protocol or valid domain name is given the browser proceeds to feed
-the text given in the address box to the browser's default web search engine.
-In many cases the URL has a special piece of text appended to it to tell the
-search engine that it came from a particular browser's URL bar.
-
-Convert non-ASCII Unicode characters in hostname
+Conviertir caracteres Unicode no-ASCII en un nombre de host
 ------------------------------------------------
-
-* The browser checks the hostname for characters that are not in ``a-z``,
+* El navegador comprueba el nombre de host por caracteres que no sean ``a-z``,
   ``A-Z``, ``0-9``, ``-``, or ``.``.
-* Since the hostname is ``google.com`` there won't be any, but if there were
-  the browser would apply `Punycode`_ encoding to the hostname portion of the
-  URL.
 
-Check HSTS list
+* Como el nombre de host es ``google.com`` no habrá ninguno, pero si
+  lo hubiera, el navegador aplicaría codificación `Punycode`_ a la porción
+  del nombre de host de la URL.
+
+Comprueba lista HSTS
 ---------------
-* The browser checks its "preloaded HSTS (HTTP Strict Transport Security)"
-  list. This is a list of websites that have requested to be contacted via
-  HTTPS only.
-* If the website is in the list, the browser sends its request via HTTPS
-  instead of HTTP. Otherwise, the initial request is sent via HTTP.
-  (Note that a website can still use the HSTS policy *without* being in the
-  HSTS list.  The first HTTP request to the website by a user will receive a
-  response requesting that the user only send HTTPS requests.  However, this
-  single HTTP request could potentially leave the user vulnerable to a
-  `downgrade attack`_, which is why the HSTS list is included in modern web
-  browsers.)
+* El navegador comprueba su lista precargada 'HSTS (HTTP Strict 
+  Transport Security)'. Esto es una lista de sitios web que han 
+  solicitado ser contactados solamente por HTTPS.
 
-DNS lookup
+* Si el sitio web está en la lista, el navegador envía su solicitud
+  vía HTTPS en lugar de HTTP. De otra forma, la solicitud inicial
+  es enviada por HTTP.
+  (Ten en cuenta que un sitio web HTTP puede seguir usando la 
+  política HSTS *sin* estar en la lista HSTS. La primera solicitud
+  HTTP hacia el sitio web hecha por un usuario recibirá una respuesta
+  solicitando que el usuario sólo envió solicitudes HTTPS. Sin embargo,
+  esta única solicitud HTTP podría potencialmente dejar al usuario
+  vulnerable ante un `downgrade attack`_, este es el porque de que 
+  la lista HSTS sea incluida en los navegadores web modernos.
+
+Resolución DNS 
 ----------
 
-* Browser checks if the domain is in its cache. (to see the DNS Cache in
-  Chrome, go to `chrome://net-internals/#dns <chrome://net-internals/#dns>`_).
-* If not found, the browser calls ``gethostbyname`` library function (varies by
-  OS) to do the lookup.
-* ``gethostbyname`` checks if the hostname can be resolved by reference in the
-  local ``hosts`` file (whose location `varies by OS`_) before trying to
-  resolve the hostname through DNS.
-* If ``gethostbyname`` does not have it cached nor can find it in the ``hosts``
-  file then it makes a request to the DNS server configured in the network
-  stack. This is typically the local router or the ISP's caching DNS server.
-* If the DNS server is on the same subnet the network library follows the
-  ``ARP process`` below for the DNS server.
-* If the DNS server is on a different subnet, the network library follows
-  the ``ARP process`` below for the default gateway IP.
+* El navegador comprueba si el dominio está en su cache (para ver la 
+  caché DNS en Chrome, ve a `chrome://net-internals/#dns <chrome://net-internals/#dns>`_).
+* Si no es encontrado, el navegador llama a la función de biblioteca 
+  ``gethostbyname`` (varía dependiendo del OS) para hacer la resolución dns.
+* ``gethostbyname`` comprueba si el nombre de host puede ser resuelto por
+  referencia en el fichero local ``hosts`` (Cuya situación varía en
+  cada OS) antes de intentar resolver el nombre de host a través de DNS.
+* Si ``gethostbyname`` no lo tiene cacheado o no puede encontrarlo
+  en el archivo ``hosts``, entonces realiza una solicitud al servidor DNS
+  condifurado en el stack de red. Esto se realiza típicamente contra el 
+  route local o contra el servidor de cacheo DNS del ISP.
+* Si el servidor DNS está en la misma subred, la biblioteca de red 
+  sigue el ``ARP process`` por debajo del servidor DNS.
+* Si el servidor DNS está en una subred diferente, la biblioteca de red
+  sigue el ``ARP process`` por debajo de el gateway por defecto.
 
-
-ARP process
+El proceso ARP
 -----------
 
-In order to send an ARP (Address Resolution Protocol) broadcast the network
-stack library needs the target IP address to look up. It also needs to know the
-MAC address of the interface it will use to send out the ARP broadcast.
+Con el fin de enviar un mensaje broadcast ARP (Protocolo de Resolución de 
+direcciones), el stack de red necesita saber la dirección IP objetivo.
+También es necesario saber la dirección MAC de la interfaz que será usada
+para enviar el mensaje broadcast ARP.
 
-The ARP cache is first checked for an ARP entry for our target IP. If it is in
-the cache, the library function returns the result: Target IP = MAC.
+La caché ARP es checkeada en primer lugar buscando la entrada de nuestra
+ip objetivo. Si está en la caché, la función de biblioteca retorna el 
+resultado: Ip Objetivo = MAC.
 
-If the entry is not in the ARP cache:
+Si la entrada no está en la caché ARP:
+* La tabla de rutas es observada para ver si la Ip Objetivo está en 
+  alguna de las subredes de la tabla de rutas local. Si lo está, 
+  la biblioteca usa la interfaz asociada a esa subnet. Si no lo está,
+  la biblioteca usa la interfaz que tiene la subred de nuestro
+  default gateway.
 
-* The route table is looked up, to see if the Target IP address is on any of
-  the subnets on the local route table. If it is, the library uses the
-  interface associated with that subnet. If it is not, the library uses the
-  interface that has the subnet of our default gateway.
+* La dirección MAC de la interfaz de red seleccionada es encontrada.
 
-* The MAC address of the selected network interface is looked up.
+* La biblioteca de red envía una request ARP de capa 2 (Capa de Enlace
+  según el modelo `OSI`_) 
 
-* The network library sends a Layer 2 (data link layer of the `OSI model`_)
-  ARP request:
 
 ``ARP Request``::
 
@@ -253,31 +285,31 @@ If the entry is not in the ARP cache:
     Target MAC: FF:FF:FF:FF:FF:FF (Broadcast)
     Target IP: target.ip.goes.here
 
-Depending on what type of hardware is between the computer and the router:
+Dependiendo de qué tipo de hardware está entre la computadora y el router:
 
-Directly connected:
+Directamente conectada:
 
-* If the computer is directly connected to the router the router responds
-  with an ``ARP Reply`` (see below)
+* Si la computadora está directamente conectada al router, el router responde
+  con una ``ARP reply`` (mira más abajo)
 
 Hub:
 
-* If the computer is connected to a hub, the hub will broadcast the ARP
-  request out all other ports. If the router is connected on the same "wire",
-  it will respond with an ``ARP Reply`` (see below).
+* Si la computadora está conectada a un hub, el hub envíara por broadcast
+  la ARP request por todos sus puertos. Si el router está conectado en
+  el mismo "cable", responderá con un ``ARP Reply`` (mira más abajo)
 
 Switch:
 
-* If the computer is connected to a switch, the switch will check its local
-  CAM/MAC table to see which port has the MAC address we are looking for. If
-  the switch has no entry for the MAC address it will rebroadcast the ARP
-  request to all other ports.
+* Si la computadora está conectada a un switch, el switch comprobará
+  su tabla CAM/MAC local para ver en que puerto está la dirección MAC
+  que estamos buscando. Si el switch no tiene una entrada para esa 
+  dirección MAC, reenviará una ARP request a todos los demás puertos.
 
-* If the switch has an entry in the MAC/CAM table it will send the ARP request
-  to the port that has the MAC address we are looking for.
+* Si el switch tiene una entrada en la tabla MAC/CAM enviará el
+  ARP request al puerto que tiene la dirección MAC que estamos buscando.
 
-* If the router is on the same "wire", it will respond with an ``ARP Reply``
-  (see below)
+* Si el router está en el mismo "cable", responderá con un ``ARP Reply``
+  (mira más abajo)
 
 ``ARP Reply``::
 
@@ -286,389 +318,415 @@ Switch:
     Target MAC: interface:mac:address:here
     Target IP: interface.ip.goes.here
 
-Now that the network library has the IP address of either our DNS server or
-the default gateway it can resume its DNS process:
+Ahora la biblioteca de red tiene la dirección IP de nuesto servidor DNS
+or de nuestro gateway por defecto. Esto resume el proceso DNS:
+* El puerto 53 es abierto para enviar una request UDP al servidor
+  DNS. (Si el tamaño de la respuesta es muy largo, se usará TCP)
+* Si el servidor DNS local/ISP no tiene el registro, entonces es 
+  solicitada una búsqueda recursiva que fluye por la lista de 
+  servidores DNS hasta que encuentra el SOA y si encuentra la respuesta,
+  la devuelve.
 
-* Port 53 is opened to send a UDP request to DNS server (if the response size
-  is too large, TCP will be used instead).
-* If the local/ISP DNS server does not have it, then a recursive search is
-  requested and that flows up the list of DNS servers until the SOA is reached,
-  and if found an answer is returned.
-
-Opening of a socket
+Abriendo un socket
 -------------------
-Once the browser receives the IP address of the destination server, it takes
-that and the given port number from the URL (the HTTP protocol defaults to port
-80, and HTTPS to port 443), and makes a call to the system library function
-named ``socket`` and requests a TCP socket stream - ``AF_INET/AF_INET6`` and
-``SOCK_STREAM``.
+Una vez que el navegador recive la dirección IP del servidor de destino,
+toma eso y el número de puerto dado en la URL (el procolo HTTP puesto 80
+por defecto, y HTTPS al puerto 443), y hace una llamada a una función
+de la biblioteca del sistema llamada ``socket`` y solicita un stream socket 
+TCP - ``AF_INET/AF_INET6`` y ``SOCK_STREAM``.
 
-* This request is first passed to the Transport Layer where a TCP segment is
-  crafted. The destination port is added to the header, and a source port is
-  chosen from within the kernel's dynamic port range (ip_local_port_range in
-  Linux).
-* This segment is sent to the Network Layer, which wraps an additional IP
-  header. The IP address of the destination server as well as that of the
-  current machine is inserted to form a packet.
-* The packet next arrives at the Link Layer. A frame header is added that
-  includes the MAC address of the machine's NIC as well as the MAC address of
-  the gateway (local router). As before, if the kernel does not know the MAC
-  address of the gateway, it must broadcast an ARP query to find it.
+* Esta request es pasara en primer lugar a la capa de Transporte donde 
+  es elaborado el segmento tcp. El puerto de destino es agregado al header
+  y el puerto de origen es elegido por el rango de puertos dinámicos del
+  Kernel. (ip_local_port_range en Linux)
+* Este segmento es enviado a la capa de red la cual agrega un header IP
+  adicional. La dirección ip de destino del server así como la de la máquina
+  actual son insertadas al formar el paquete.
+* El paquete llega a la capa de Enlace. Un frame header es agregado el cual
+  incluye la dirección MAC de la tarjeta de red así como la dirección MAC del
+  gateway (route local). Como antes, si el kernel no conoce la dirección MAC
+  address del gateway, deberá lanzar una consulta ARP en broadcast para
+  encontrarla.
 
-At this point the packet is ready to be transmitted through either:
+En este punto, el paquete esta listo para ser transmitido a través de lo siguiente:
 
 * `Ethernet`_
 * `WiFi`_
 * `Cellular data network`_
 
-For most home or small business Internet connections the packet will pass from
-your computer, possibly through a local network, and then through a modem
-(MOdulator/DEModulator) which converts digital 1's and 0's into an analog
-signal suitable for transmission over telephone, cable, or wireless telephony
-connections. On the other end of the connection is another modem which converts
-the analog signal back into digital data to be processed by the next `network
-node`_ where the from and to addresses would be analyzed further.
+Para la mayoría de conexiones de internet de hogar y pequeñas empresas, los
+paquetes pasaran desde tu computadora, posiblemente a través de una red local
+y entonces a través del modem (Modulador/Desmodulador) el cual convierte
+la señal digital compuesta por unos y ceros a una señal analógica que posibilita
+la transmisión a través de cable telefónico o de una conexión telefónica 
+inalámbrica. En el otro lado de la conexión, hay otro modem que convierte la
+señal analógica de nuevo a señales digitales que será procesada en el siguiente
+`nodo de red`_ donde, entre otras cosas, las direcciones de origen y destino 
+serán analizadas.
 
-Most larger businesses and some newer residential connections will have fiber
-or direct Ethernet connections in which case the data remains digital and
-is passed directly to the next `network node`_ for processing.
+Negocios más grandes y algunas nuevas conexiones residenciales tienen
+fibra o conexiones Ethernet directas en cuyo caso la información 
+se mantiene en digital y pasa directamente al siguiente `nodo de red`_ 
+para ser procesada.
 
-Eventually, the packet will reach the router managing the local subnet. From
-there, it will continue to travel to the autonomous system's (AS) border
-routers, other ASes, and finally to the destination server. Each router along
-the way extracts the destination address from the IP header and routes it to
-the appropriate next hop. The time to live (TTL) field in the IP header is
-decremented by one for each router that passes. The packet will be dropped if
-the TTL field reaches zero or if the current router has no space in its queue
-(perhaps due to network congestion).
+Eventualmente, el paquete alcanzará el router que gestiona la subred local.
+Desde ahí, continuará el viaje hacia el sistema de routers de borde autónomo (AS),
+otros ASes, y finalmente el servidor de destino. Cada router del camino extrae
+la dirección de destino de la cabezera IP y lo enruta debidamente hacia el 
+siguiente salto. El campo de tiempo de vida (TTL) en el heade IP es 
+decrementado por cada uno de los routers por lo que pasa. El paquete 
+será descartado si el campo TTL alcanza zero o si el actual router no 
+tiene espacio en su cola. (Debido a causas de congestión de la red).
 
-This send and receive happens multiple times following the TCP connection flow:
+Este envío y recibo ocurre multiples veces siguiendo el flujo de 
+una conexión TCP:
 
-* Client chooses an initial sequence number (ISN) and sends the packet to the
-  server with the SYN bit set to indicate it is setting the ISN
-* Server receives SYN and if it's in an agreeable mood:
-   * Server chooses its own initial sequence number
-   * Server sets SYN to indicate it is choosing its ISN
-   * Server copies the (client ISN +1) to its ACK field and adds the ACK flag
-     to indicate it is acknowledging receipt of the first packet
-* Client acknowledges the connection by sending a packet:
-   * Increases its own sequence number
-   * Increases the receiver acknowledgment number
-   * Sets ACK field
-* Data is transferred as follows:
-   * As one side sends N data bytes, it increases its SEQ by that number
-   * When the other side acknowledges receipt of that packet (or a string of
-     packets), it sends an ACK packet with the ACK value equal to the last
-     received sequence from the other
-* To close the connection:
-   * The closer sends a FIN packet
-   * The other sides ACKs the FIN packet and sends its own FIN
-   * The closer acknowledges the other side's FIN with an ACK
+* El cliente elige un número de secuencia inicial (ISN) y envía el paquete
+  al server con el bit SYN seteado indicando que está seteado el ISN.
+* El server recive el SYN y si está de humor:
+   * El servidor elige su número de secuencia inicial.
+   * El server setea el SYN para indicar que está eligiendo su ISN.
+   * El servidor copia el (número ISN del cliente + 1) a su campo ACK
+     y agrega el flag ACK para indicar el acuerdo de recibo del primer
+     paquete.
+* El cliente negocia la conexión enviando un paquete:
+   * Incrementa su propio número de secuencia. 
+   * Incrementa el número del negociación del receptor.
+   * Setea el campo ACK
+* Los datos son transmitidos de la siguiente manera:
+   * Desde un lado se envía N bytes de datos, esto incrementa 
+     el SEQ del N.
+   * Cuando el otro lado acusa el recibo de ese paquete (o una
+     cadena de paquetes), el envía un paquete ACK con el valor ACK
+     igual al último de la secuencia recibida desde el otro.
+* Para cerrar la conexión:
+   * El que cierra envía un paquete FIN
+   * El otro lado devuelve un ACK en respuesta al paquete FIN
+     y envía su propio FIN.
+   * El que inició el cierre acusa el recibo enviando un ACK como
+     respuesta al ACK del paso anterior.
 
 TLS handshake
 -------------
-* The client computer sends a ``ClientHello`` message to the server with its
-  Transport Layer Security (TLS) version, list of cipher algorithms and
-  compression methods available.
+* La computadora cliente envía un mensaje ``ClientHello`` al servidor
+  con la versión de su Capa de Transporte Seguro (TLS), lista de 
+  algoritmos de cifrado y métodos de compresión disponibles.
+* El servidor responde con un mensaje ``ServerHello`` hacia el cliente
+  con su versión de TLS, cifrado seleccionado, el método de compresion
+  seleccionado y certificado público firmado por un CA (Certificate Authority).
+  El certificado contiene una clave pública que será usada por el cliente para
+  cifrar el resto de la negicoación hasta que una clave simétrica
+  pueda ser agregada posteriormente.
 
-* The server replies with a ``ServerHello`` message to the client with the
-  TLS version, selected cipher, selected compression methods and the server's
-  public certificate signed by a CA (Certificate Authority). The certificate
-  contains a public key that will be used by the client to encrypt the rest of
-  the handshake until a symmetric key can be agreed upon.
+* El ciente verifica el certificado digital contra una lista de CAs confiables.
+  Si se establece una relación de confianza basadose en el CA, el cliente
+  genera una cadena de bytes pseudo aleatorios y encripta esto con la
+  clave pública del servidor. Esos bytes aleatorios pueden ser usados
+  para determinar la clave simétrica.
 
-* The client verifies the server digital certificate against its list of
-  trusted CAs. If trust can be established based on the CA, the client
-  generates a string of pseudo-random bytes and encrypts this with the server's
-  public key. These random bytes can be used to determine the symmetric key.
+* El servidor descifra los bytes aleatorios usando su clave privada
+  y usa esos bytes para generar su propia copia de la clave simétrica maestra.
 
-* The server decrypts the random bytes using its private key and uses these
-  bytes to generate its own copy of the symmetric master key.
+* El cliente envia un mensaje ``Finished`` al servidor, cifrando el hash de 
+  la transmisión, en este punto, con la clave simétrica.
 
-* The client sends a ``Finished`` message to the server, encrypting a hash of
-  the transmission up to this point with the symmetric key.
+* El servidor genera su propio hash, y entonces descifra el hash enviado
+  por el cliente para verificar si concuerda, si lo hace, envía su propio
+  mensaje ``Finished`` al cliente, también cifrado con la clave simétrica.
 
-* The server generates its own hash, and then decrypts the client-sent hash
-  to verify that it matches. If it does, it sends its own ``Finished`` message
-  to the client, also encrypted with the symmetric key.
+* A partir de ahora, en la sesión TLS la transmisión de los datos de la
+  aplicación (HTTP) será cifrada con la correspondiente clave simétrica. 
 
-* From now on the TLS session transmits the application (HTTP) data encrypted
-  with the agreed symmetric key.
-
-HTTP protocol
+Procolo HTTP
 -------------
 
-If the web browser used was written by Google, instead of sending an HTTP
-request to retrieve the page, it will send a request to try and negotiate with
-the server an "upgrade" from HTTP to the SPDY protocol.
+Si el navegador web usado fue escrito por Google, en lugar de enviar una request
+HTTP para solicitar la página, el envíara una request para intentar negociar con el
+servidor un "upgrade" de HTTP al protocolo SPDY.
 
-If the client is using the HTTP protocol and does not support SPDY, it sends a
-request to the server of the form::
+Si el cliente está usando el procolo HTTP y no soporta SPDY, el envía una request
+al servidor con esta forma:
 
     GET / HTTP/1.1
     Host: google.com
     Connection: close
     [other headers]
 
-where ``[other headers]`` refers to a series of colon-separated key-value pairs
-formatted as per the HTTP specification and separated by single new lines.
-(This assumes the web browser being used doesn't have any bugs violating the
-HTTP spec. This also assumes that the web browser is using ``HTTP/1.1``,
-otherwise it may not include the ``Host`` header in the request and the version
-specified in the ``GET`` request will either be ``HTTP/1.0`` or ``HTTP/0.9``.)
+donde ``[other headers]`` hace referencia a una serie de pares clave-valor
+separados por coma según el formato de la especificación HTTP y separados
+por una sola línea nueva. (Estamos asumiendo que el navegador web que
+está siendo usado no tiene ningún bug que viola la especificación HTTP.
+Asumimos también que el navegador web está usando ``HTTP/1.1``, de otro modo
+podría no incluid el header ``Host`` en la request y la versión especificada
+en el ``GET`` request sería ``HTTP/1.0`` o ``HTTP/0.9``.)
 
-HTTP/1.1 defines the "close" connection option for the sender to signal that
-the connection will be closed after completion of the response. For example,
+HTTP/1.1 define la opción de cierre de la conexión desde el que envia la 
+señal que la conexión será cerrada antes de completar la respuesta. Por ejemplo::
 
     Connection: close
 
-HTTP/1.1 applications that do not support persistent connections MUST include
-the "close" connection option in every message.
+aplicaciones HTTP/1.1 que no soporten conexiónes persistentes DEBEN incluir
+el la opción de cierre de la conexión en cada mensaje.
 
-After sending the request and headers, the web browser sends a single blank
-newline to the server indicating that the content of the request is done.
+Después de enviar la requests y los headers, el navegador web envía una
+única línea nueva vacía al servidor indicando que el contenido de la 
+requests está completo.
 
-The server responds with a response code denoting the status of the request and
-responds with a response of the form::
+El server responde con una código de respuesta dando a entender el estatus
+de la request y responde de la siguiente manera::
 
     200 OK
     [response headers]
 
-Followed by a single newline, and then sends a payload of the HTML content of
-``www.google.com``. The server may then either close the connection, or if
-headers sent by the client requested it, keep the connection open to be reused
-for further requests.
+Seguido por una única línea nueva, y entonces envía el payload del contenido
+HTML de ``www.google.com``. EL servidor entonces cierra la conexión, o si 
+los headers enviados por el cliente lo solicitan, mantiene la conexión
+abierta para ser rehusada para las request adicionales.
 
-If the HTTP headers sent by the web browser included sufficient information for
-the web server to determine if the version of the file cached by the web
-browser has been unmodified since the last retrieval (ie. if the web browser
-included an ``ETag`` header), it may instead respond with a request of
-the form::
+Si los headers HTTP enviados por el navegador web incluyen suficiente
+información para que el servidor web pueda determinar si la versión 
+del archivo cacheado por el navegador no ha sido modificada desde la última
+visita (por ejemplo si el navegador web inclute un header ``ÈTag``),
+el servidor web podría responder con una request con el siguiente aspecto::
 
     304 Not Modified
     [response headers]
 
-and no payload, and the web browser instead retrieves the HTML from its cache.
+Y no retornar ningún payload y entonces el navegador web mostraría
+el HTML de su caché.
 
-After parsing the HTML, the web browser (and server) repeats this process
-for every resource (image, CSS, favicon.ico, etc) referenced by the HTML page,
-except instead of ``GET / HTTP/1.1`` the request will be
+Después de parsear el HTML, el navegador web (y el servidor) repite 
+este proceso para cada recurso (imágenes, CSS, favicon.ico, etc) haciendo
+referencia a la página HTML, exceptuando ``GET / HTTP/1.1`` cuya request será
 ``GET /$(URL relative to www.google.com) HTTP/1.1``.
 
-If the HTML referenced a resource on a different domain than
-``www.google.com``, the web browser goes back to the steps involved in
-resolving the other domain, and follows all steps up to this point for that
-domain. The ``Host`` header in the request will be set to the appropriate
-server name instead of ``google.com``.
+Si el HTML referencia a un recurso de un dominio diferente que ``www.google.com``,
+el navegador web vuelve a repetir los pasos que siguió para resolver el 
+dominio ``www.google.com`` pero en este caso para ese dominio.
+El header ``Host`` en la request será seteado con el nombre apropiado en lugar
+de ``google.com``
 
-HTTP Server Request Handle
+
+Manejo de request del servidor HTTP
 --------------------------
-The HTTPD (HTTP Daemon) server is the one handling the requests/responses on
-the server side. The most common HTTPD servers are Apache or nginx for Linux
-and IIS for Windows.
+El servidor HTTPD (Http Daemon) es el que maneja las request/respondes 
+en el lado del servidor. Los servidores HTTPD más comunes son Apache y
+Nginx para Linux e IIS para Windows.
 
-* The HTTPD (HTTP Daemon) receives the request.
-* The server breaks down the request to the following parameters:
-   * HTTP Request Method (either ``GET``, ``HEAD``, ``POST``, ``PUT``,
-     ``DELETE``, ``CONNECT``, ``OPTIONS``, or ``TRACE``). In the case of a URL
-     entered directly into the address bar, this will be ``GET``.
-   * Domain, in this case - google.com.
-   * Requested path/page, in this case - / (as no specific path/page was
-     requested, / is the default path).
-* The server verifies that there is a Virtual Host configured on the server
-  that corresponds with google.com.
-* The server verifies that google.com can accept GET requests.
-* The server verifies that the client is allowed to use this method
-  (by IP, authentication, etc.).
-* If the server has a rewrite module installed (like mod_rewrite for Apache or
-  URL Rewrite for IIS), it tries to match the request against one of the
-  configured rules. If a matching rule is found, the server uses that rule to
-  rewrite the request.
-* The server goes to pull the content that corresponds with the request,
-  in our case it will fall back to the index file, as "/" is the main file
-  (some cases can override this, but this is the most common method).
-* The server parses the file according to the handler. If Google
-  is running on PHP, the server uses PHP to interpret the index file, and
-  streams the output to the client.
+* El HTTPD (HTTP Daemon) recibe la request.
+* El servidor descompone la request a los siguientes parámetros:
+  * HTTP Request Method (ya sea ``GET``, ``HEAD``, ``POST``, ``PUT``,
+     ``DELETE``, ``CONNECT``, ``OPTIONS``, or ``TRACE``). En el caso de una
+    url introducida directamente en la barra de direcciones, será ``GET``.
+   * Dominio, en este caso - google.com.
+   * Ruta/página solicitada, en este caso - / (al no especificar página o ruta
+     ,/ es la ruta por defecto).
+* El servidor verifica que hay un Host Virtual configurado en el servidor
+  que corresponde con google.com.
+* El servidor verifica que goog.eocm puede aceptar requests GET.
+* El servidor verifica que el cliente está permitido a usar ese método
+  (by IP, autenticación, etc).
+* Si el servidor tiene un modulo rewrite instalado (como mod_rewrite en Apache
+  o URL Rewrite para IIS), este intenta emparejar la request contra 
+  alguna de las reglas configuradas. Si se encuentra una regla que coincida,
+  el servidor usa esa regla para reescribir la request.
+* El servidor va a devolver el contenido que corresponda con la request,
+  en nuestro caso, traerá el archivo index, así como "/" es el fichero principal.
+  (en algunos casos esto puede ser modificado, pero es el método más común)
+* El servidor parsea el archivo de acuerdo con el manejador. Si Google
+  está usando PHP, el server usa PHP para interpretar el fichero index y 
+  devuelve la salida al cliente.
 
-Behind the scenes of the Browser
+Detrás de los escenarios del Browser
 ----------------------------------
 
-Once the server supplies the resources (HTML, CSS, JS, images, etc.)
-to the browser it undergoes the below process:
+Una vez que el servidor suministra los rescursos (HTML, CSS, JS, images, etc.)
+al navegador, lo que sigue es el siguiente proceso.
 
-* Parsing - HTML, CSS, JS
-* Rendering - Construct DOM Tree → Render Tree → Layout of Render Tree →
-  Painting the render tree
+* Parseo - HTML, CSS, JS
+* Renderizado - Construcción del árbol DOM → Árbol Render → Diseño del 
+  árbol Render → Pintando el árbol 
 
-Browser
+Navegador
 -------
 
-The browser's functionality is to present the web resource you choose, by
-requesting it from the server and displaying it in the browser window.
-The resource is usually an HTML document, but may also be a PDF,
-image, or some other type of content. The location of the resource is
-specified by the user using a URI (Uniform Resource Identifier).
+La funcionalidad de un navegador es presentar el recurso web que elijas,
+solicitándolo al servidor web y mostrándolo en la ventana del navegador.
+Este recurso es usualmente un documento HTML, pero puede ser también
+un PDF, imagen o algún otro tipo de contenido. La localización de ese
+recurso es especificado por el usuario usando una URI (Uniform Resource
+Identifier).
 
-The way the browser interprets and displays HTML files is specified
-in the HTML and CSS specifications. These specifications are maintained
-by the W3C (World Wide Web Consortium) organization, which is the
-standards organization for the web.
+La forma en la que el navegador interpreta archivos HTML es especificada
+en las especificaciones HTML y CSS. Estas especificaciones son mantenidas 
+por la organización W3C (World Wide Web Consortium), que es una de las 
+organizaiciones estándarizadoras para la web.
 
-Browser user interfaces have a lot in common with each other. Among the
-common user interface elements are:
+Las interfaces de los navegadores tienen mucho en común unas con otras.
+Los elementos más comunes en la interfaz de usuario son:
 
-* An address bar for inserting a URI
-* Back and forward buttons
-* Bookmarking options
-* Refresh and stop buttons for refreshing or stopping the loading of
-  current documents
-* Home button that takes you to your home page
+* Una barra de direcciones para insertar una URI.
+* Botones de atrás y adelante.
+* Opciones de Marcadores
+* Botones de refresco y stop para refrescar o detener el contenido
+  de la carga de los documentos actuales.
+* Botón Home que te devuelce a la home page.
 
-**Browser High Level Structure**
+**Estructura de alto nivel de los navegadores**
 
-The components of the browsers are:
+Los componentes de los navegadores son:
 
-* **User interface:** The user interface includes the address bar,
-  back/forward button, bookmarking menu, etc. Every part of the browser
-  display except the window where you see the requested page.
-* **Browser engine:** The browser engine marshals actions between the UI
-  and the rendering engine.
-* **Rendering engine:** The rendering engine is responsible for displaying
-  requested content. For example if the requested content is HTML, the
-  rendering engine parses HTML and CSS, and displays the parsed content on
-  the screen.
-* **Networking:** The networking handles network calls such as HTTP requests,
-  using different implementations for different platforms behind a
-  platform-independent interface.
-* **UI backend:** The UI backend is used for drawing basic widgets like combo
-  boxes and windows. This backend exposes a generic interface that is not
-  platform specific.
-  Underneath it uses operating system user interface methods.
-* **JavaScript engine:** The JavaScript engine is used to parse and
-  execute JavaScript code.
-* **Data storage:** The data storage is a persistence layer. The browser may
-  need to save all sorts of data locally, such as cookies. Browsers also
-  support storage mechanisms such as localStorage, IndexedDB, WebSQL and
-  FileSystem.
+* **Interfaz de usuario:** La interfaz de usuario incluye una barra
+  de direcciones, botones atrás/adelante, menú de marcadores, etc.
+  Mostrado en cada parte del navegador a excepción de la
+  parte de la ventana donde ves la página solicitada.
+* **Motor del browser:** El motor del navegador ordena las actiones entre
+  UI y el motor de renderizado.
+* **Motor de renderizado:** El motor de renderizado es responsable de 
+  mostrar el contenido solicidado. Por ejemplo, si el contenido solicitado
+  es HTML, el motor de renderizado parsea el HTML y el CSS y muestra
+  el contenido parseado en la pantalla.
+* **Networking:** Networking maneja las llamadas de red com requests HTTP,
+  usando diferentes implementaciones para diferentes plataformas detrás
+  de una interfaz que no depende de la plataforma.
+* **UI backend:** El backend UI es usado para dibujar widgets básicos
+  como cajas de selección y ventanas. Este backend expone una interfaz
+  genérica que no es específica a la plataforma.
+  En lugar de eso, usa métodos de interfaz de usuario del propio
+  sistema operativo.
+* **Motor de Javascript:** El motor de javascript e usado para parsear
+  y ejecutar código JavaScript.
+* **Almacenamiento de datos:** El almacenamiento de datos es una capa
+  de persistencia. El navegador necesita almacenar datos localmente, 
+  como cookies. Los navegadores también soportan mecanismo de almacenamiento
+  como localStorage, IndexedDB, WebSQL and FileSystem.
 
-HTML parsing
+Parseo HTML 
 ------------
 
-The rendering engine starts getting the contents of the requested
-document from the networking layer. This will usually be done in 8kB chunks.
+El motor de renderizado comienza obteniendo el contenido del documento 
+solicitado desde la capa de red. Esto será realizado en trozos de 8kB.
 
-The primary job of HTML parser to parse the HTML markup into a parse tree.
+El trabajo principal del parseador HTML es parsear las marcas HTML a un
+árbol.
 
-The output tree (the "parse tree") is a tree of DOM element and attribute
-nodes. DOM is short for Document Object Model. It is the object presentation
-of the HTML document and the interface of HTML elements to the outside world
-like JavaScript. The root of the tree is the "Document" object. Prior of
-any manipulation via scripting, the DOM has an almost one-to-one relation to
-the markup.
+El árbol de salida (el "parse tree") es un árbol de elementos DOM y nodos
+de atributos. DOM es un acronimo de Document Object Model. Es un la 
+representacion objeto de un documento HTML y la interfaz de elementos
+HTML al mundo exterior como JavaScript. La raíz del ñarbol es el
+objeto "Document". Antes de cualquier manipulación vía scripting, el
+DOM tiene una relación uno-a-uno con el marcado.
 
-**The parsing algorithm**
 
-HTML cannot be parsed using the regular top-down or bottom-up parsers.
+**El algoritmo de parseo**
 
-The reasons are:
+El HTML no puede ser parseado usando los típicos parseadores 
+que van de arriba-abajo o fondo-superficie.
 
-* The forgiving nature of the language.
-* The fact that browsers have traditional error tolerance to support well
-  known cases of invalid HTML.
-* The parsing process is reentrant. For other languages, the source doesn't
-  change during parsing, but in HTML, dynamic code (such as script elements
-  containing `document.write()` calls) can add extra tokens, so the parsing
-  process actually modifies the input.
+Las razones son:
+* La propia naturaleza del lenguaje.
+* El hecho de que los navegadores tienen tolerancia de error 
+  para soportar casos conocidos de HTML inválido.
+* El proceso de parseo es reentrante. Para otros lenguajes, la fuente
+  no cambia durante el parseo, pero en HTML, código dinámico (como 
+  elementos de un script que contiene llamadas a 'document.write()') pueden
+  añadir tokens extra, entonces el proceso de parseo actualmente 
+  modifica la entrada.
 
-Unable to use the regular parsing techniques, the browser utilizes a custom
-parser for parsing HTML. The parsing algorithm is described in
-detail by the HTML5 specification.
+Ya qu enoes posible usar técnicas de parseo convencionales, el navegador 
+utiliza un parseo personalizado para parsear HTML. El algorimo de parseo
+es descrito en detalle en la especificación de HTML5.
 
-The algorithm consists of two stages: tokenization and tree construction.
+El algoritmo consiste en dos escenarios: tokenización y construcción del árbol.
 
-**Actions when the parsing is finished**
+**Acciones cuando el parseo ha acabado**
 
-The browser begins fetching external resources linked to the page (CSS, images,
-JavaScript files, etc.).
+El navegador comienza a traer los recursos externos enlazados a la página
+(CSS, images, Javascript files, etc.).
 
-At this stage the browser marks the document as interactive and starts
-parsing scripts that are in "deferred" mode: those that should be
-executed after the document is parsed. The document state is
-set to "complete" and a "load" event is fired.
+En este momento, el navegador marca el documento como interactivo y 
+comienza scripts de parseo que están en modo "diferido": aquellos
+que deberían ser ejecutados después de que el documento sea parseado.
+El estado del documento es seteado a "completo" y el evento "load" es
+disparado.
 
-Note there is never an "Invalid Syntax" error on an HTML page. Browsers fix
-any invalid content and go on.
+Nótese que no hay nunca un error de "Sintaxis inválida" en una página HTML.
+Los navegadores corrigen cualquier contenigo inválido y continúan.
 
-CSS interpretation
+
+Interpretación CSS
 ------------------
 
-* Parse CSS files, ``<style>`` tag contents, and ``style`` attribute
-  values using `"CSS lexical and syntax grammar"`_
-* Each CSS file is parsed into a ``StyleSheet object``, where each object
-  contains CSS rules with selectors and objects corresponding CSS grammar.
-* A CSS parser can be top-down or bottom-up when a specific parser generator
-  is used.
+* Parsea archivos CSS, contenido de etiquetas ``<style>`` , y valores de 
+  atributos ``style`` usando `"gramática, lexico y sintáxis CSS"`_
+* Cada archivo CSS es parseado en un ``StyleSheet object``, donde cada objeto
+  contiene reglas CSS con selectores y objetos correspondientes  a 
+  la gramática CSS. 
+* Un parseador CSS puede ir de arriba a abajo o de atrás para adelante
+  cuando un generador de parseo especifico es usado.
 
-Page Rendering
+Renderizado de la página.
 --------------
-
-* Create a 'Frame Tree' or 'Render Tree' by traversing the DOM nodes, and
-  calculating the CSS style values for each node.
-* Calculate the preferred width of each node in the 'Frame Tree' bottom up
-  by summing the preferred width of the child nodes and the node's
-  horizontal margins, borders, and padding.
+* Crea un 'Frame Tree' o 'Render Tree' atravesando los nodos del DOM y
+  calculando los valores del estilo CSS de cada nodo.
+* Calcula el ancho de cada nodo en el 'Frame Tree' de arriba a abajo
+  sumando el ancho principal de cada nodo hijo y de los márgenes
+  horizontales del nodo, bordes y padding(relleno) 
 * Calculate the actual width of each node top-down by allocating each node's
   available width to its children.
-* Calculate the height of each node bottom-up by applying text wrapping and
-  summing the child node heights and the node's margins, borders, and padding.
-* Calculate the coordinates of each node using the information calculated
-  above.
-* More complicated steps are taken when elements are ``floated``,
-  positioned ``absolutely`` or ``relatively``, or other complex features
-  are used. See
+* Calcula el alto de cada nodo de abajo a arriba aplicando ajuste de texto
+  y sumando las alturas de el nodo hijo y los márgenes, bordes y relleno.
+* Calcula las coordenadas de cada nodo usando la información calculada
+  arriba.
+* Se realizan pasos más complicados cuando hay elementos que son ``floated``,
+  o posicionados ``absolutely`` or ``relatively`` u otras características
+  más complejas son usadas. Mira
   http://dev.w3.org/csswg/css2/ and http://www.w3.org/Style/CSS/current-work
-  for more details.
-* Create layers to describe which parts of the page can be animated as a group
-  without being re-rasterized. Each frame/render object is assigned to a layer.
-* Textures are allocated for each layer of the page.
-* The frame/render objects for each layer are traversed and drawing commands
-  are executed for their respective layer. This may be rasterized by the CPU
-  or drawn on the GPU directly using D2D/SkiaGL.
-* All of the above steps may reuse calculated values from the last time the
-  webpage was rendered, so that incremental changes require less work.
-* The page layers are sent to the compositing process where they are combined
-  with layers for other visible content like the browser chrome, iframes
-  and addon panels.
-* Final layer positions are computed and the composite commands are issued
-  via Direct3D/OpenGL. The GPU command buffer(s) are flushed to the GPU for
-  asynchronous rendering and the frame is sent to the window server.
+  para más detalles.
+* Crea capas que describen que partes de la página pueden ser animadas
+  como un grupo sin volver a ser rasterizadas. Cada objeto frame/render 
+  es asignado a una capa.
+* Las texturas son situadas en cada capa de la página.
+* Los objetos frame/render para cada capa son atravesadas y comandos 
+  de dibujado son ejecutadas para cada una de sus respectivas capas. Esto
+  puede ser realizado por la CPU o directamente por la GPU usando D2D/SkiaGL.
+* Todos los pasos de arriba pueden reutilizar los valores calculados
+  desde la última vez que la página fue renderizada, de esta forma,
+  esos cambios incrementales requieren menos trabajo.
+* Las capas de la página son enviadas al proceso de composición donde
+  son combinadas con capas de otro contenido visible como el navegador (chrome?)
+  iframes y paneles añadidos.
+* Las posiciones de las capas finales son procesadas y comandos de 
+  composición son emitidos a via Direct3D/OpenGL. Los búferes de comandos de 
+  la GPU se descargan en la GPU para la representación asíncrona y la trama 
+  se envía al servidor de ventanas.
 
-GPU Rendering
+Renderizado de GPU
 -------------
 
-* During the rendering process the graphical computing layers can use general
-  purpose ``CPU`` or the graphical processor ``GPU`` as well.
+* Durante el proceso de renderizado las capas de computación gráfica
+  pueden usar ``CPU`` de propósito general o el procesador gráfico
+  ``GPU``.
 
-* When using ``GPU`` for graphical rendering computations the graphical
-  software layers split the task into multiple pieces, so it can take advantage
-  of ``GPU`` massive parallelism for float point calculations required for
-  the rendering process.
+* Cuando usa ``GPU`` para el renderizado gráfico las capas de gráficas de
+  software dividen la tarea en varios pedazos, de esta forma
+  se puede aprovechar el procesamiento en paralelo masivo para operaciones
+  de coma flotante requeridos por el proceso de renderizado.
 
-
-Window Server
+Servidor de ventanas.
 -------------
 
-Post-rendering and user-induced execution
+Post renderizado y ejecución inducida por el usuario
 -----------------------------------------
 
-After rendering has completed, the browser executes JavaScript code as a result
-of some timing mechanism (such as a Google Doodle animation) or user
-interaction (typing a query into the search box and receiving suggestions).
-Plugins such as Flash or Java may execute as well, although not at this time on
-the Google homepage. Scripts can cause additional network requests to be
-performed, as well as modify the page or its layout, causing another round of
-page rendering and painting.
+Después de que el renderizado haya sido completado, el navegador ejecuta
+el código JavaScript como resultado de algún mecanismo de timing 
+(Como las animaciones Google Doogle) o interacción del usuario 
+(Escribiendo una consulta en la caja de búsqueda y reciviendo sugerencias).
+Plugins como Flash o Java pueden ser ejecutados también, aunque no es el caso
+en la página principal de Google. Los Scripts pueden realizar requests adicionales,
+que pueden modificar la página o su composición, causando así otra vez
+un renderizado y dibujado de la página.
 
 .. _`Creative Commons Zero`: https://creativecommons.org/publicdomain/zero/1.0/
 .. _`"CSS lexical and syntax grammar"`: http://www.w3.org/TR/CSS2/grammar.html
