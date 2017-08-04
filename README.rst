@@ -5,7 +5,7 @@ El texto de este repositorio es un intento de traducción al
 español (de España) del texto original en inglés del repositorio 
 https://github.com/alex/what-happens-when
 
-Consideré la información muy didáctica he importante para repasar 
+Consideré la información muy didáctica e importante para repasar 
 conceptos básicos y entender, para el que no tuviera cierta idea ya, 
 la "magia" que ocurre ante una acción tan cotidiana. Por lo tanto, 
 he realizado esta traducción (Que aún tiene muchas cosas por corregir) 
